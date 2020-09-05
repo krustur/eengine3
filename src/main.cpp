@@ -1,5 +1,7 @@
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
+#define STB_IMAGE_IMPLEMENTATION
+#include "others/stb_image.h"
 #include <iostream>
 #include "shader.h"
 
@@ -62,11 +64,11 @@ int main()
 	// 	-0.5f,  0.5f, 0.0f   // top left 
 	// };
 	float vertices[] = {
-		// positions         // colors
-		0.5f,  0.5f, 0.0f,   1.0f, 0.0f, 1.0f,   // top right
-		0.5f, -0.5f, 0.0f,   1.0f, 0.0f, 0.0f,   // bottom right
-		-0.5f, -0.5f, 0.0f,  0.0f, 1.0f, 0.0f,   // bottom left
-		-0.5f,  0.5f, 0.0f,  0.0f, 0.0f, 1.0f    // top left
+		// positions          // colors           // texture coords
+		0.5f,  0.5f, 0.0f,    1.0f, 0.0f, 0.0f,   1.0f, 1.0f,   // top right
+		0.5f, -0.5f, 0.0f,    0.0f, 1.0f, 0.0f,   1.0f, 0.0f,   // bottom right
+		-0.5f, -0.5f, 0.0f,   0.0f, 0.0f, 1.0f,   0.0f, 0.0f,   // bottom left
+		-0.5f,  0.5f, 0.0f,   1.0f, 1.0f, 0.0f,   0.0f, 1.0f    // top left 
 	}; 
 	unsigned int indices[] = {  // note that we start from 0!
 		0, 1, 3,   // first triangle
@@ -88,11 +90,14 @@ int main()
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW); 
 
 	// - vertex position
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)0);
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)0);
 	glEnableVertexAttribArray(0);  
 	// - vertex color
-	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)(3* sizeof(float)));
+	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(3* sizeof(float)));
 	glEnableVertexAttribArray(1);  
+	// - texture coords
+	glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(6 * sizeof(float)));
+	glEnableVertexAttribArray(2);  
 
     // note that this is allowed, the call to glVertexAttribPointer registered VBO as the vertex attribute's bound vertex buffer object so afterwards we can safely unbind
     glBindBuffer(GL_ARRAY_BUFFER, 0); 
@@ -107,6 +112,33 @@ int main()
 
     // uncomment this call to draw in wireframe polygons.
     //glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+
+	// load texture
+	// int width, height, nrChannels;
+	// unsigned char *data = stbi_load("data\\textures\\container.jpg", &width, &height, &nrChannels, 0); 
+	// std::cout << "texture [" << &data << "] dimensions: " << width << ", " << height << ", " << nrChannels << std::endl;
+	unsigned int texture;
+	glGenTextures(1, &texture);  
+	glBindTexture(GL_TEXTURE_2D, texture);  
+	// set the texture wrapping/filtering options (on the currently bound texture object)
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);	
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	// load and generate the texture
+	int width, height, nrChannels;
+	unsigned char *data = stbi_load("data/textures/container.jpg", &width, &height, &nrChannels, 0);
+	if (data)
+	{
+		std::cout << "Loaded texture [" << &data << ", " << width << ", " << height << ", " << nrChannels << "]" << std::endl;
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
+		glGenerateMipmap(GL_TEXTURE_2D);
+		stbi_image_free(data);
+	}
+	else
+	{
+		std::cout << "Failed to load texture" << std::endl;
+	}
 
 	// render loop
 	while (!glfwWindowShouldClose(window))
@@ -126,6 +158,7 @@ int main()
 		// int vertexColorLocation = glGetUniformLocation(shaderProgram, "ourColor");
 		// glUniform4f(vertexColorLocation, 0.0f, greenValue, 0.0f, 1.0f);
 
+		glBindTexture(GL_TEXTURE_2D, texture);
 		glBindVertexArray(VAO);
 		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);  
 		// glBindVertexArray(0); // no need to unbind it every time 
