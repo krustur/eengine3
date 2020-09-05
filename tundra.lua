@@ -34,7 +34,7 @@ Build {
         local deluxe = Program {
             Name = "eengine3",
             SourceDir = "src",
-            Sources = {"main.cpp", "glad/glad.c"},
+            Sources = {"main.cpp", "glad/glad.c", "others/stb_image.cpp"},
             Libs = {
                 "opengl32.lib",
                 "glfw3.lib",
