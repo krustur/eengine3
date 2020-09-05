@@ -1,7 +1,10 @@
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 #define STB_IMAGE_IMPLEMENTATION
-#include "others/stb_image.h"
+#include <others/stb_image.h>
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/type_ptr.hpp>
 #include <iostream>
 #include "shader.h"
 
@@ -22,6 +25,14 @@ void processInput(GLFWwindow *window)
 
 int main()
 {
+
+	glm::vec4 vec(1.0f, 0.0f, 0.0f, 1.0f);
+	glm::mat4 trans = glm::mat4(1.0f);
+	trans = glm::translate(trans, glm::vec3(1.0f, 1.0f, 0.0f));
+	vec = trans * vec;
+	std::cout << vec.x << " " << vec.y << " " << vec.z << " " << std::endl;
+
+
 	// glfw: initialize and configure
 	glfwInit();
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
