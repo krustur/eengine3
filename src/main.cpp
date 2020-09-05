@@ -117,20 +117,22 @@ int main()
 	// int width, height, nrChannels;
 	// unsigned char *data = stbi_load("data\\textures\\container.jpg", &width, &height, &nrChannels, 0); 
 	// std::cout << "texture [" << &data << "] dimensions: " << width << ", " << height << ", " << nrChannels << std::endl;
-	unsigned int texture;
-	glGenTextures(1, &texture);  
-	glBindTexture(GL_TEXTURE_2D, texture);  
+	unsigned int texture[2];
+	glGenTextures(2, texture);  
+	glBindTexture(GL_TEXTURE_2D, texture[0]);  
 	// set the texture wrapping/filtering options (on the currently bound texture object)
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);	
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 	// load and generate the texture
+	stbi_set_flip_vertically_on_load(true);
+
 	int width, height, nrChannels;
 	unsigned char *data = stbi_load("data/textures/container.jpg", &width, &height, &nrChannels, 0);
 	if (data)
 	{
-		std::cout << "Loaded texture [" << &data << ", " << width << ", " << height << ", " << nrChannels << "]" << std::endl;
+		std::cout << "Loaded texture [" << std::hex << static_cast<void*>(data) << ", " << width << ", " << height << ", " << nrChannels << "]" << std::endl;
 		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
 		glGenerateMipmap(GL_TEXTURE_2D);
 		stbi_image_free(data);
@@ -139,6 +141,25 @@ int main()
 	{
 		std::cout << "Failed to load texture" << std::endl;
 	}
+
+	glBindTexture(GL_TEXTURE_2D, texture[1]);  
+	// set the texture wrapping/filtering options (on the currently bound texture object)
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);	
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	data = stbi_load("data/textures/awesomeface.png", &width, &height, &nrChannels, 0);
+	if (data)
+	{
+		std::cout << "Loaded texture [" << std::hex << static_cast<void*>(data) << ", " << width << ", " << height << ", " << nrChannels << "]" << std::endl;
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
+		glGenerateMipmap(GL_TEXTURE_2D);
+		stbi_image_free(data);
+	}
+
+	ourShader.use();
+	ourShader.setInt("texture1", 0);
+	ourShader.setInt("texture2", 1);
 
 	// render loop
 	while (!glfwWindowShouldClose(window))
@@ -151,14 +172,18 @@ int main()
 		glClear(GL_COLOR_BUFFER_BIT);
 
 		// draw our first triangle
-		ourShader.use();
+	
 
 		// float timeValue = glfwGetTime();
 		// float greenValue = (sin(timeValue) / 2.0f) + 0.5f;
 		// int vertexColorLocation = glGetUniformLocation(shaderProgram, "ourColor");
 		// glUniform4f(vertexColorLocation, 0.0f, greenValue, 0.0f, 1.0f);
 
-		glBindTexture(GL_TEXTURE_2D, texture);
+		glActiveTexture(GL_TEXTURE0);
+		glBindTexture(GL_TEXTURE_2D, texture[0]);
+		glActiveTexture(GL_TEXTURE1);
+		glBindTexture(GL_TEXTURE_2D, texture[1]);
+
 		glBindVertexArray(VAO);
 		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);  
 		// glBindVertexArray(0); // no need to unbind it every time 
