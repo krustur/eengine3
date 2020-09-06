@@ -8,6 +8,10 @@
 #include <iostream>
 #include "shader.h"
 
+// settings
+const unsigned int SCR_WIDTH = 800;
+const unsigned int SCR_HEIGHT = 600;
+
 void framebuffer_size_callback(GLFWwindow *window, int width, int height)
 {
 	glViewport(0, 0, width, height);
@@ -31,7 +35,7 @@ int main()
 #endif
 
 	// glfw window creation
-	GLFWwindow *window = glfwCreateWindow(800, 600, "e-engine 3", NULL, NULL);
+	GLFWwindow *window = glfwCreateWindow(SCR_WIDTH, SCR_HEIGHT, "e-engine 3", NULL, NULL);
 	if (window == NULL)
 	{
 		std::cout << "Failed to create GLFW window" << std::endl;
@@ -205,7 +209,7 @@ int main()
 		glm::mat4 view = glm::mat4(1.0f);
 		glm::mat4 projection;
 		view = glm::translate(view, glm::vec3(0.0f, 0.0f, -3.0f)); 
-		projection = glm::perspective(glm::radians(45.0f), 800.0f / 600.0f, 0.1f, 100.0f);
+		projection = glm::perspective(glm::radians(45.0f), (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 100.0f);
       	ourShader.setMat4("projection", projection); // note: set it outside the main loop only once.
         ourShader.setMat4("view", view);
 
