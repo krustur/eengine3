@@ -12,6 +12,14 @@
 const unsigned int SCR_WIDTH = 800;
 const unsigned int SCR_HEIGHT = 600;
 
+float deltaTime = 0.0f;	// Time between current frame and last frame
+float lastFrame = 0.0f; // Time of last frame
+
+// camera
+glm::vec3 cameraPos   = glm::vec3(0.0f, 0.0f,  3.0f);
+glm::vec3 cameraFront = glm::vec3(0.0f, 0.0f, -1.0f);
+glm::vec3 cameraUp    = glm::vec3(0.0f, 1.0f,  0.0f);
+
 void framebuffer_size_callback(GLFWwindow *window, int width, int height)
 {
 	glViewport(0, 0, width, height);
@@ -21,6 +29,15 @@ void processInput(GLFWwindow *window)
 {
 	if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
 		glfwSetWindowShouldClose(window, true);
+    float cameraSpeed = 2.5f * deltaTime;
+    if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
+        cameraPos += cameraSpeed * cameraFront;
+    if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
+        cameraPos -= cameraSpeed * cameraFront;
+    if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
+        cameraPos -= glm::normalize(glm::cross(cameraFront, cameraUp)) * cameraSpeed;
+    if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
+        cameraPos += glm::normalize(glm::cross(cameraFront, cameraUp)) * cameraSpeed;
 }
 
 int main()
@@ -189,6 +206,11 @@ int main()
 	// render loop
 	while (!glfwWindowShouldClose(window))
 	{
+		// time
+		float currentFrame = glfwGetTime();
+		deltaTime = currentFrame - lastFrame;
+		lastFrame = currentFrame; 
+
 		// input
 		processInput(window);
 
@@ -205,27 +227,9 @@ int main()
 		// activate shader
         ourShader.use();
 
-		// Camera position
-		// glm::vec3 cameraPos = glm::vec3(0.0f, 0.0f, 3.0f); 
-		// glm::vec3 cameraTarget = glm::vec3(0.0f, 0.0f, 0.0f);
-		// glm::vec3 cameraDirection = glm::normalize(cameraPos - cameraTarget);
-		// glm::vec3 up = glm::vec3(0.0f, 1.0f, 0.0f); 
-		// glm::vec3 cameraRight = glm::normalize(glm::cross(up, cameraDirection));
-		// glm::vec3 cameraUp = glm::cross(cameraDirection, cameraRight);
-
-		// glm::mat4 view;
-		// view = glm::lookAt(glm::vec3(0.0f, 0.0f, 3.0f), 
-		// 				   glm::vec3(0.0f, 0.0f, 0.0f), 
-		// 				   glm::vec3(0.0f, 1.0f, 0.0f));
-
-
-		const float radius = 10.0f;
-		float camX = sin(glfwGetTime()) * radius;
-		float camZ = cos(glfwGetTime()) * radius;
-		glm::mat4 view;
-		view = glm::lookAt(glm::vec3(camX, 0.0, camZ), glm::vec3(0.0, 0.0, 0.0), glm::vec3(0.0, 1.0, 0.0)); 
-
 		// create transformations
+		glm::mat4 view;
+		view = glm::lookAt(cameraPos, cameraPos + cameraFront, cameraUp);
 		glm::mat4 projection;
 		projection = glm::perspective(glm::radians(45.0f), (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 100.0f);
       	ourShader.setMat4("projection", projection); // note: set it outside the main loop only once.
