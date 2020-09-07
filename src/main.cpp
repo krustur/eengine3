@@ -304,8 +304,27 @@ int main()
 
 		// lightingShader.setInt("texture1", 0);
 		// lightingShader.setInt("texture2", 1);
-		lightingShader.setVec3("objectColor", 1.0f, 0.5f, 0.31f);
-		lightingShader.setVec3("lightColor",  1.0f, 1.0f, 1.0f);
+		lightingShader.setVec3("material.ambient", 1.0f, 0.5f, 0.31f);
+		lightingShader.setVec3("material.diffuse", 1.0f, 0.5f, 0.31f);
+		lightingShader.setVec3("material.specular", 0.5f, 0.5f, 0.5f);
+		lightingShader.setFloat("material.shininess", 32.0f);
+		// ruby
+		// lightingShader.setVec3("material.ambient", 0.1745f, 0.01175f, 0.01175f);
+		// lightingShader.setVec3("material.diffuse", 	0.61424f, 0.04136f, 0.04136f);
+		// lightingShader.setVec3("material.specular", 0.727811f, 0.626959f, 0.626959f);
+		// lightingShader.setFloat("material.shininess", 0.6f * 128);
+
+		glm::vec3 lightColor;
+		lightColor.x = sin(glfwGetTime() * 2.0f);
+		lightColor.y = sin(glfwGetTime() * 0.7f);
+		lightColor.z = sin(glfwGetTime() * 1.3f);
+		
+		glm::vec3 diffuseColor = lightColor   * glm::vec3(0.5f); 
+		glm::vec3 ambientColor = diffuseColor * glm::vec3(0.2f); 
+		
+		lightingShader.setVec3("light.ambient", ambientColor);
+		lightingShader.setVec3("light.diffuse", diffuseColor);
+		lightingShader.setVec3("light.specular", 1.0f, 1.0f, 1.0f); 
 		lightingShader.setVec3("lightPos", lightPos); 
 		lightingShader.setVec3("viewPos", camera.Position); 
 
