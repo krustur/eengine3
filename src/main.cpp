@@ -241,6 +241,7 @@ int main()
 
 
 	unsigned int texture = loadTexture("data/textures/container2.png");
+	unsigned int texture_specular = loadTexture("data/textures/container2_specular.png");
 
 	// render loop
 	while (!glfwWindowShouldClose(window))
@@ -257,9 +258,7 @@ int main()
 		glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-		// bind textures on corresponding texture units
-		glActiveTexture(GL_TEXTURE0);
-		glBindTexture(GL_TEXTURE_2D, texture);
+
 
 		// activate shader
         lightingShader.use();
@@ -299,6 +298,7 @@ int main()
 
 		lightingShader.setVec3("material.ambient", 1.0f, 0.5f, 0.31f);
 		lightingShader.setInt("material.diffuse", 0);
+		lightingShader.setInt("material.specular", 1);
 		lightingShader.setVec3("material.specular", 0.5f, 0.5f, 0.5f);
 		lightingShader.setFloat("material.shininess", 32.0f);
 		// ruby
@@ -316,6 +316,12 @@ int main()
 
 		model = glm::mat4(1.0f);
         lightingShader.setMat4("model", model);
+
+		glActiveTexture(GL_TEXTURE0);
+		glBindTexture(GL_TEXTURE_2D, texture);
+
+		glActiveTexture(GL_TEXTURE1);
+		glBindTexture(GL_TEXTURE_2D, texture_specular);
 
 		glBindVertexArray(VAO);
         glDrawArrays(GL_TRIANGLES, 0, 36);
