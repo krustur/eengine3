@@ -8,6 +8,7 @@ local common = {
             "D:/SDK/glfw-3.3.2.bin.WIN64/lib-vc2019"
         },
         CXXOPTS = {
+            "/std:c++17",
             {"/EHsc", Config = "*-msvc-*"},
             {"/Zi", Config = "*-msvc-debug"},
             {"/MDd"}
