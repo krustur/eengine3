@@ -299,7 +299,6 @@ int main()
 		lightingShader.setVec3("material.ambient", 1.0f, 0.5f, 0.31f);
 		lightingShader.setInt("material.diffuse", 0);
 		lightingShader.setInt("material.specular", 1);
-		lightingShader.setVec3("material.specular", 0.5f, 0.5f, 0.5f);
 		lightingShader.setFloat("material.shininess", 32.0f);
 		// ruby
 		// lightingShader.setVec3("material.ambient", 0.1745f, 0.01175f, 0.01175f);
