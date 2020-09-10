@@ -2,10 +2,12 @@ local common = {
     Env = {
         CPPPATH = {
             "include",
-            "D:/SDK/glfw-3.3.2.bin.WIN64/include"
+            "D:/SDK/glfw-3.3.2.bin.WIN64/include",
+            "D:/SDK/assimp/include"
         },
         LIBPATH = {
-            "D:/SDK/glfw-3.3.2.bin.WIN64/lib-vc2019"
+            "D:/SDK/glfw-3.3.2.bin.WIN64/lib-vc2019",
+            "D:/SDK/assimp/lib/Release"
         },
         CXXOPTS = {
             "/std:c++17",
@@ -41,7 +43,8 @@ Build {
                 "glfw3.lib",
                 "user32.lib",
                 "Shell32.lib",
-                "Gdi32.lib"
+                "Gdi32.lib",
+                "assimp-vc142-mt.lib"
             }
         }
         Default(deluxe)

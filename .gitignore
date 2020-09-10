@@ -2,3 +2,7 @@
 .tundra2*
 t2-output/**
 vc140.pdb
+
+# temporary
+assimp/** 
+data/models/**
