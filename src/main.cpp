@@ -223,7 +223,7 @@ int main()
 		glm::vec3( 0.0f,  0.0f, -3.0f)
 	};  
 	glm::vec3 pointLightColors[] = {
-		glm::vec3( 1.0f, 0.0f, 0.0f),
+		glm::vec3( 1.0f, 1.0f, 1.0f),
 		glm::vec3( 1.0f, 1.0f, 1.0f),
 		glm::vec3( 1.0f, 1.0f, 1.0f),
 		glm::vec3( 1.0f, 1.0f, 1.0f),
@@ -275,7 +275,8 @@ int main()
 
 	// load models
     // -----------
-    Model ourModel("data/models/backpack/backpack.obj");
+    // Model ourModel("data/models/backpack/backpack.obj");
+	Model ourModel("data/models/donut2.obj");
 
 	// render loop
 	while (!glfwWindowShouldClose(window))
@@ -295,7 +296,10 @@ int main()
 
 
 		// view/projection transformation
-		glm::mat4 projection = glm::perspective(glm::radians(camera.Zoom), (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 100.0f);
+		glm::mat4 projection = glm::perspective(glm::radians(camera.Zoom), 
+		(float)SCR_WIDTH / (float)SCR_HEIGHT,
+		 0.1f,
+		 100.0f);
         glm::mat4 view = camera.GetViewMatrix();
 
        

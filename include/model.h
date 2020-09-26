@@ -205,6 +205,7 @@ private:
 
 unsigned int TextureFromFile(const char *path, const string &directory, bool gamma)
 {
+    std::cout << "Loading Texture: " << path << std::endl;
     string filename = string(path);
     filename = directory + '/' + filename;
 

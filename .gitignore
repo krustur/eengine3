@@ -5,4 +5,4 @@ vc140.pdb
 
 # temporary
 assimp/** 
-data/models/**
+data/models/*.zip
